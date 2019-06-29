@@ -2,7 +2,8 @@ import json, os, logging, time, urllib2
 from subprocess import call, Popen, PIPE
 from pipes import quote
 from config import Config
-from logger  import CustomLogger
+from store  import Store 
+from logger import CustomLogger
 from dotenv import load_dotenv
 
 class Result:
@@ -22,6 +23,7 @@ class AcmeOperation:
         self.client_ip_address         = self._getPublicIP()
         self.dns_provider_update_delay = 30
         self.config                    = Config(logger=self.logger)
+        self.s3_store                  = Store(logger=self.logger)
         self.test                      = False
 
     def _providerCheck(self):
@@ -142,6 +144,8 @@ class AcmeOperation:
             args.insert(cmd_index, 'create')
             self._runCmd(args)
             time.sleep(self.dns_provider_update_delay)
+            # now save the created certificates to s3-compatible object storage
+            self.s3_store.saveCerts()
         elif action == 'cleanup':
             args.insert(cmd_index, 'delete')
             self._runCmd(args)

@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 
 class Store():
     load_dotenv()
-    def __init__(self):
-        self.logger         = CustomLogger().logger
+    def __init__(self, logger=None):
+        self.logger         = CustomLogger().logger if logger is None else logger
         self.certs_location = '/etc/letsencrypt/live'
         self.endpoint_url   = os.getenv('ENDPOINT_URL')
         self.aws_access_key = os.getenv('AWS_ACCESS_KEY')
