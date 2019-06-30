@@ -7,7 +7,8 @@ class Config():
             logger = CustomLogger().logger
         
         self.logger           = logger
-        self.config_file_path = os.path.join(os.getcwd(), 'config.json')
+        self.current_path     = os.path.dirname(os.path.realpath(__file__))
+        self.config_file_path = os.path.join(self.current_path, 'config.json')
         self.getconfig        = self._getConfig()
 
     def _getConfig(self):
