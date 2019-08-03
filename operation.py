@@ -90,7 +90,7 @@ class AcmeOperation:
                 args.extend(['-d', domain])
                 
             # adding certbot options to run in a non interactive mode
-            args.extend(['--manual-public-ip-logging-ok', '--noninteractive', '--agree-tos', '--quiet'])   
+            args.extend(['--manual-public-ip-logging-ok', '--noninteractive', '--agree-tos', '--email', '--quiet'])   
 
             if test:
                 args.append('--test-cert')

@@ -10,6 +10,7 @@ def main():
     for action in ['obtain', 'auth', 'cleanup']:
        action_parser = subparsers.add_parser(action)
        action_parser.add_argument('-p', dest='provider', help='the domain name provider', action='store', required=True)
+       action_parser.add_argument('--email', dest='email', help='obtain a test certificate from a staging server', action='store')
        action_parser.add_argument('--expand', dest='expand', help='updates an existing certificate with a new certificate/s', action='store_true')
        action_parser.add_argument('--test', dest='test', help='obtain a test certificate from a staging server', action='store_true')
         
