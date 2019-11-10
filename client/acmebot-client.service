@@ -4,7 +4,9 @@ After=multi-user.target
 
 [Service]
 Type=simple
+EnvironmentFile=/lib/systemd/system/acmebot-client.env
 ExecStart=/usr/bin/python3 /usr/bin/acmebot-client.py
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

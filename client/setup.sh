@@ -8,6 +8,9 @@ echo "Installing the Acme-Client script and service"
 cp acmebot-client.py /usr/bin/acmebot-client.py
 cp acmebot-client.service /lib/systemd/system/acmebot-client.service
 
+chmod 644 /lib/systemd/system/acmebot-client.env
+chmod 644 /lib/systemd/system/acmebot-client.service
+
 echo "Enable the Acme-Client Service"
 
 systemctl daemon-reload 

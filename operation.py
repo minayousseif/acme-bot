@@ -1,4 +1,4 @@
-import json, os, logging, time, urllib2
+import json, os, logging, time, urllib
 from subprocess import call, Popen, PIPE
 from pipes import quote
 from config import Config
@@ -38,7 +38,7 @@ class AcmeOperation:
         return False
     
     def _getPublicIP(self):
-        return urllib2.urlopen('https://api.ipify.org/').read()
+        return urllib.request.urlopen('https://api.ipify.org/').read()
 
     def _getToolPath(self, tool):
         if tool is not None and tool not in self.config.getconfig:
@@ -150,6 +150,12 @@ class AcmeOperation:
             args.insert(cmd_index, 'delete')
             self._runCmd(args)
 
+    def manual_s3_upload(self):
+        """manually uploads the live certificate files into the configured s3-compatible storage"""
+        try:
+            self.s3_store.saveCerts()
+        except Exception as e:
+            self.logger.error('Failed to manually upload the certificates to the s3-compatible storage, Reason: %s' % e)
 
 
 

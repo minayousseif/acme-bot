@@ -3,32 +3,34 @@ Formerly was using Redis to notify other web servers about SSL certificates upda
 
 ## Configuration
 
-We need to set the needed environment variables first
+We need to set the needed environment variables into a systemd EnvironmentFile first
 ```bash
-export AWS_ACCESS_KEY=your_aws_access_key
-export AWS_SECRET_KEY=your_aws_secret_key
-export AWS_REGION=your_aws_region
-export CERTS_BUCKET_NAME=the_certificates_bucket_name
-export CERTS_BUCKET_KEY=the_certificates_key_usually_the_domain name
-export CERTS_LOCAL_DIR=the_local_ssl_certificates_directory
-export ACME_CLIENT_CHECK_DELAY=the_interval_to_check_for_updates_in_seconds
-export CALLBACK_CMD=after_the_certificates_update_bash_cmd
+cat << EOF > /lib/systemd/system/acmebot-client.env
+AWS_ACCESS_KEY=your_aws_access_key
+AWS_SECRET_KEY=your_aws_secret_key
+AWS_REGION=your_aws_region
+CERTS_BUCKET_NAME=the_certificates_bucket_name
+CERTS_BUCKET_KEY=the_certificates_key_usually_the_domain name
+CERTS_LOCAL_DIR=the_local_ssl_certificates_directory
+ACME_CLIENT_CHECK_DELAY=the_interval_to_check_for_updates_in_seconds
+CALLBACK_CMD=after_the_certificates_update_bash_cmd
+EOF
 ```
 
 Example:
 
 ```bash
-export AWS_ACCESS_KEY=your_aws_access_key
-export AWS_SECRET_KEY=your_aws_secret_key
-export AWS_REGION=us-east-1
-export CERTS_BUCKET_NAME=letsencrypt-certs
-export CERTS_BUCKET_KEY=example.com
-export CERTS_LOCAL_DIR=/etc/ssl/crt
-export ACME_CLIENT_CHECK_DELAY=30
-export CALLBACK_CMD=service apache2 restart
+cat << EOF > /lib/systemd/system/acmebot-client.env
+AWS_ACCESS_KEY=your_aws_access_key
+AWS_SECRET_KEY=your_aws_secret_key
+AWS_REGION=us-east-1
+CERTS_BUCKET_NAME=letsencrypt-certs
+CERTS_BUCKET_KEY=example.com
+CERTS_LOCAL_DIR=/etc/ssl/crt
+ACME_CLIENT_CHECK_DELAY=30
+CALLBACK_CMD=service apache2 restart
+EOF
 ```
-
-If you need to set them as a system-wide variables, you may want to think about adding them to /etc/profile, /etc/bash.bashrc, or /etc/environment.
 
 ## Install
 

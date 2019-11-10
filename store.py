@@ -61,16 +61,22 @@ class Store():
                     cert_key = os.path.splitext(file)[0]
                     certs_files[cert][cert_key] = filesha256
                     # Save the certificates to a bucket
-                    self.client.put_object(
-                        ACL='private',
-                        Body=filepath,
-                        Bucket=self.s3_bucket_name,
-                        Key='{0}/{1}'.format(cert, file))
+                    try:
+                        with open(filepath, 'rb') as certdata:
+                            self.client.put_object(
+                                ACL='private',
+                                Body=certdata,
+                                Bucket=self.s3_bucket_name,
+                                Key='{0}/{1}'.format(cert, file))
+                    except Exception:
+                        self.logger.error('Can not save the %s certificate file' % cert)
+
                 # create and upload a metadata file contains the certificates files sha256         
                 metadata_file = os.path.join(cert_location, 'metadata.json')
+                metadata_obj  = json.dumps(certs_files[cert], indent=4)
                 try:
                     with open(metadata_file, 'w') as f:
-                        f.write(json.dumps(certs_files[cert], indent=4))
+                        f.write(metadata_obj)
                 except Exception:
                     self.logger.error('Can not save the metadata json file for %s certificate' % cert)
                     return
@@ -78,7 +84,7 @@ class Store():
                 if os.path.isfile(metadata_file):
                     self.client.put_object(
                         ACL='private',
-                        Body=metadata_file,
+                        Body=metadata_obj,
                         Bucket=self.s3_bucket_name,
                         Key='{0}/{1}'.format(cert, 'metadata.json'),
                         Metadata=certs_files[cert])
