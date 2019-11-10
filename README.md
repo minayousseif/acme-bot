@@ -22,7 +22,7 @@ git clone https://github.com/minayousseif/acme-bot.git
 Install the requirements
 
 ```bash
-python -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 You can use the cli to create a configuration file
@@ -75,8 +75,14 @@ to learn how you can let's encrypt ssl certificates run:
 ./acmebot -h
 ```
 
-### TODO
-- add more detailed readme
+### Acme-client
+a Python script that runs as a service to check for SSL certificates updates.
+
+for more details please refer to [acme-client readme](/client/README.md)
+
+
+#### [DISCLAIMER] THE SCRIPT IS PROVIDED “AS IS”
+THE SCRIPT IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SCRIPT OR THE USE OR OTHER DEALINGS IN THE SCRIPT.
 
 
 

@@ -52,7 +52,7 @@ class Config():
                 else:
                     self.logger.error('{0} does not exist to remove it'.format(args.domain))
             elif args.subaction == 'list':
-                print json.dumps(self.getconfig['domains'], indent=4)
+                print (json.dumps(self.getconfig['domains'], indent=4))
                 return
                     
         try:
@@ -76,7 +76,7 @@ class Config():
                 else:
                     self.logger.error("-path can not be empty")
             elif args.subaction == 'show':
-                print json.dumps(self.getconfig, indent=4)
+                print (json.dumps(self.getconfig, indent=4))
                 return        
 
         try:
@@ -84,6 +84,5 @@ class Config():
                 json.dump(self.getconfig, jsonfile, indent=4)
         except Exception:
             self.logger.critical("An exception occured, can not edit the config file")
-                    
-                
+                         
         pass            
