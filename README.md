@@ -2,6 +2,7 @@
 Letsencrypt automation using certbot dns challenge and storing the certificate to s3-compatible object storage
 
 ## Install
+**Requires Python 3**
 
 #### This tool uses both certbot and dns-lexicon cli
 

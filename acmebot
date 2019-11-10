@@ -31,6 +31,8 @@ def main():
         if config_action in ['certbot', 'lexicon']:
             config_action_parser.add_argument('-path', dest='path',   help='the path to {0}'.format(config_action), action='store', required=True)
 
+    subparsers.add_parser('s3_upload', help='Manually uploads the live certificate files into the configured s3-compatible storage')
+
     try: 
         args = parser.parse_args()
         provider = None
@@ -45,8 +47,10 @@ def main():
             operation.config.domainAction(args)
         elif args.action == 'config':
             operation.config.configAction(args)
+        elif args.action == 's3_upload':
+            operation.manual_s3_upload()
     except Exception as ex:
-        logging.error(ex.message)        
+        logging.error(ex)        
 
 if __name__ == '__main__':
     main()
