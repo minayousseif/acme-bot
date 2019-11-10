@@ -1,5 +1,5 @@
-boto3 == 1.9.169
-dns-lexicon[namecheap] == 3.2.6
+boto3 == 1.10.14
+dns-lexicon[namecheap] == 3.3.8
 python-json-logger == 0.1.11
 python-dotenv == 0.10.3
 validators == 0.13.0

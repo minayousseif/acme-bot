@@ -3,8 +3,9 @@ from botocore.client import Config
 from logger import CustomLogger
 from dotenv import load_dotenv
 
-class Store():
-    load_dotenv()
+load_dotenv()
+
+class Store():    
     def __init__(self, logger=None):
         self.logger         = CustomLogger().logger if logger is None else logger
         self.certs_location = '/etc/letsencrypt/live'
