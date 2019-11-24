@@ -10,11 +10,6 @@ Letsencrypt automation using certbot dns challenge and storing the certificate t
 - Install lexicon from here https://github.com/AnalogJ/lexicon
 
 Clone the repo
-```bash
-git clone git@github.com:minayousseif/acme-bot.git
-```
-
-or 
 
 ```bash
 git clone https://github.com/minayousseif/acme-bot.git

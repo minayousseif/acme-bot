@@ -38,7 +38,7 @@ class AcmeOperation:
         return False
     
     def _getPublicIP(self):
-        return urllib.request.urlopen('https://api.ipify.org/').read()
+        return urllib.request.urlopen('https://api.ipify.org/').read().decode('utf8')
 
     def _getToolPath(self, tool):
         if tool is not None and tool not in self.config.getconfig:
