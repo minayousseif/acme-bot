@@ -174,9 +174,9 @@ class AcmeOperation:
 
     def hook(self, action=None, use_cli=False):
         if use_cli:
-            self._lexiconCliHook(self, action)
+            self._lexiconCliHook(action)
         else:
-            self._lexiconLibHook(self, action)
+            self._lexiconLibHook(action)
 
 
     def manual_s3_upload(self):
