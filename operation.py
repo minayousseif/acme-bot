@@ -5,6 +5,8 @@ from config import Config
 from store  import Store 
 from logger import CustomLogger
 from dotenv import load_dotenv
+from lexicon.config import ConfigResolver
+from lexicon.client import Client
 
 class Result:
     pass
@@ -61,6 +63,69 @@ class AcmeOperation:
             self.logger.error('StdErr: {0}'.format(stderr))
 
         return result
+    
+    def _lexiconCliHook(self, action=None):
+        # the passed environment variables from certbot
+        CERTBOT_DOMAIN     = os.environ.get("CERTBOT_DOMAIN", None)
+        CERTBOT_VALIDATION = os.environ.get("CERTBOT_VALIDATION", None)
+        
+        cmd_index = 6
+        lexicon = self._getToolPath('lexicon')
+
+        if lexicon is None:
+            self.logger.error("failed to run the lexicon cmd, lexicon path is not set")
+            return
+
+        args = [ 
+            lexicon, 
+            self.dns_provider, 
+            '--auth-username={0}'.format(self.dns_provider_username), 
+            '--auth-token={0}'.format(self.dns_provider_auth_token),
+            '--auth-client-ip={0}'.format(self.client_ip_address),
+            '--ttl=100',
+            CERTBOT_DOMAIN, 
+            'TXT', 
+            '--name=_acme-challenge.{0}'.format(CERTBOT_DOMAIN),  
+            '--content={0})'.format(CERTBOT_VALIDATION),
+        ]
+        if action == 'auth':
+            #   https://github.com/AnalogJ/lexicon/blob/master/examples/certbot.default.sh#L46
+            #   How many seconds to wait after updating your DNS records. This may be required,
+            #   depending on how slow your DNS host is to begin serving new DNS records after updating
+            #   them via the API. 30 seconds is a safe default, but some providers can be very slow 
+            #   (e.g. Linode).
+            #
+            #   Defaults to 30 seconds
+            args.insert(cmd_index, 'create')
+            self._runCmd(args)
+            time.sleep(self.dns_provider_update_delay)
+            # now save the created certificates to s3-compatible object storage
+            self.s3_store.saveCerts()
+        elif action == 'cleanup':
+            args.insert(cmd_index, 'delete')
+            self._runCmd(args)
+
+    def _lexiconLibHook(self, action=None):
+        CERTBOT_DOMAIN     = os.environ.get("CERTBOT_DOMAIN", None)
+        CERTBOT_VALIDATION = os.environ.get("CERTBOT_VALIDATION", None)
+
+        lexicon_config = {
+            "provider_name" : self.dns_provider,
+            "action": action, # create, list, update, delete
+            "domain": CERTBOT_DOMAIN, # domain name
+            "type": "TXT",
+            [self.dns_provider]: {
+                "auth_username": self.dns_provider_username,
+                "auth_token": self.dns_provider_auth_token,
+                "auth_client_ip": self.client_ip_address
+            },
+            "content": CERTBOT_VALIDATION,
+        }
+
+        config = ConfigResolver()
+        config.with_env().with_dict(dict_object=lexicon_config)
+        Client(config).execute()
+
         
     def obtain(self, test=False, expand=False):
         """
@@ -107,48 +172,12 @@ class AcmeOperation:
             
             
 
-    def hook(self, action=None):
-        # the passed environment variables from certbot
-        CERTBOT_DOMAIN     = os.environ.get("CERTBOT_DOMAIN", None)
-        CERTBOT_VALIDATION = os.environ.get("CERTBOT_VALIDATION", None)
+    def hook(self, action=None, use_cli=False):
+        if use_cli:
+            self._lexiconCliHook(self, action)
+        else:
+            self._lexiconLibHook(self, action)
 
-        cmd_index = 6
-        lexicon = self._getToolPath('lexicon')
-
-        if lexicon is None:
-            self.logger.error("failed to run the lexicon cmd, lexicon path is not set")
-            return
-
-        args = [ 
-            lexicon, 
-            self.dns_provider, 
-            '--auth-usernam={0}'.format(self.dns_provider_username), 
-            '--auth-token={0}'.format(self.dns_provider_auth_token),
-            '--auth-client-ip={0}'.format(self.client_ip_address),
-            '--ttl=100',
-            CERTBOT_DOMAIN, 
-            'TXT', 
-            '--name', 
-            '_acme-challenge.{0}'.format(CERTBOT_DOMAIN), 
-            '--content', 
-            CERTBOT_VALIDATION
-        ]
-        if action == 'auth':
-            #   https://github.com/AnalogJ/lexicon/blob/master/examples/certbot.default.sh#L46
-            #   How many seconds to wait after updating your DNS records. This may be required,
-            #   depending on how slow your DNS host is to begin serving new DNS records after updating
-            #   them via the API. 30 seconds is a safe default, but some providers can be very slow 
-            #   (e.g. Linode).
-            #
-            #   Defaults to 30 seconds
-            args.insert(cmd_index, 'create')
-            self._runCmd(args)
-            time.sleep(self.dns_provider_update_delay)
-            # now save the created certificates to s3-compatible object storage
-            self.s3_store.saveCerts()
-        elif action == 'cleanup':
-            args.insert(cmd_index, 'delete')
-            self._runCmd(args)
 
     def manual_s3_upload(self):
         """manually uploads the live certificate files into the configured s3-compatible storage"""
