@@ -114,12 +114,13 @@ class AcmeOperation:
             "action": action, # create, list, update, delete
             "domain": CERTBOT_DOMAIN, # domain name
             "type": "TXT",
-            [self.dns_provider]: {
-                "auth_username": self.dns_provider_username,
-                "auth_token": self.dns_provider_auth_token,
-                "auth_client_ip": self.client_ip_address
-            },
             "content": CERTBOT_VALIDATION,
+        }
+        # add the provider specific config fields
+        lexicon_config[self.dns_provider] = {
+            "auth_username": self.dns_provider_username,
+            "auth_token": self.dns_provider_auth_token,
+            "auth_client_ip": self.client_ip_address
         }
 
         config = ConfigResolver()
