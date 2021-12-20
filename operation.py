@@ -122,6 +122,7 @@ class AcmeOperation:
             "domain": CERTBOT_DOMAIN, # domain name
             "type": "TXT",
             "content": CERTBOT_VALIDATION,
+            "name": '_acme-challenge.{0}'.format(CERTBOT_DOMAIN)
         }
         # add the provider specific config fields
         lexicon_config[self.dns_provider] = {
