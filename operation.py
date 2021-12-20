@@ -135,7 +135,7 @@ class AcmeOperation:
         config.with_env().with_dict(dict_object=lexicon_config)
         Client(config).execute()
 
-        if lexicon_config["action"] == "auth":
+        if lexicon_config["action"] == "create":
             time.sleep(self.dns_provider_update_delay)
 
         
