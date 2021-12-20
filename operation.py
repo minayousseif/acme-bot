@@ -105,9 +105,16 @@ class AcmeOperation:
             args.insert(cmd_index, 'delete')
             self._runCmd(args)
 
-    def _lexiconLibHook(self, action=None):
+    def _lexiconLibHook(self, cmdAction=None):
         CERTBOT_DOMAIN     = os.environ.get("CERTBOT_DOMAIN", None)
         CERTBOT_VALIDATION = os.environ.get("CERTBOT_VALIDATION", None)
+        
+        action = 'list'
+        
+        if cmdAction == 'auth':
+            action = 'create'
+        elif cmdAction == 'cleanup':
+            action = 'clean'
 
         lexicon_config = {
             "provider_name" : self.dns_provider,
