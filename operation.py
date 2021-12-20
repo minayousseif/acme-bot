@@ -110,11 +110,11 @@ class AcmeOperation:
         CERTBOT_VALIDATION = os.environ.get("CERTBOT_VALIDATION", None)
         
         action = 'list'
-        
+
         if cmdAction == 'auth':
             action = 'create'
         elif cmdAction == 'cleanup':
-            action = 'clean'
+            action = 'delete'
 
         lexicon_config = {
             "provider_name" : self.dns_provider,
