@@ -23,7 +23,7 @@ class AcmeOperation:
         self.dns_provider_username     = os.getenv('DNS_PROVIDER_USERNAME')
         self.dns_provider_auth_token   = os.getenv('DNS_PROVIDER_AUTH_TOKEN')
         self.client_ip_address         = self._getPublicIP()
-        self.dns_provider_update_delay = 30
+        self.dns_provider_update_delay = 120
         self.config                    = Config(logger=self.logger)
         self.s3_store                  = Store(logger=self.logger)
         self.test                      = False
@@ -82,7 +82,7 @@ class AcmeOperation:
             '--auth-username={0}'.format(self.dns_provider_username), 
             '--auth-token={0}'.format(self.dns_provider_auth_token),
             '--auth-client-ip={0}'.format(self.client_ip_address),
-            '--ttl=100',
+            '--ttl=60',
             CERTBOT_DOMAIN, 
             'TXT', 
             '--name=_acme-challenge.{0}'.format(CERTBOT_DOMAIN),  
@@ -122,7 +122,8 @@ class AcmeOperation:
             "domain": CERTBOT_DOMAIN, # domain name
             "type": "TXT",
             "content": CERTBOT_VALIDATION,
-            "name": f'_acme-challenge.{CERTBOT_DOMAIN}'
+            "name": f'_acme-challenge.{CERTBOT_DOMAIN}',
+            "ttl": 60
         }
         # add the provider specific config fields
         lexicon_config[self.dns_provider] = {
