@@ -61,6 +61,7 @@ class Store():
                     cert_key = os.path.splitext(file)[0]
                     certs_files[cert][cert_key] = filesha256
                     # Save the certificates to a bucket
+                    self.logger.info(filepath)
                     try:
                         with open(filepath, 'rb') as certdata:
                             self.client.put_object(
